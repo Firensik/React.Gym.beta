@@ -5,6 +5,13 @@ import { useState, useEffect } from 'react';
 
 function App() {
 
+const [inputValue,setInputValue] = useState("")
+
+const clearInput = (e) => {
+  e.target.value=""
+}
+
+
   const [results , setResults] = useState({
     25:{
       plates:0,
@@ -28,7 +35,7 @@ function App() {
     plates:0
     },
     'Rest':{
-      rest:0
+      rest:[['eleiko'].quantity]
     },
   })
 
@@ -70,20 +77,19 @@ function App() {
     },
     eleiko:{
       label:"eleiko",
-      quantity:0,
+      quantity:inputValue['eleiko'],
     }
   })
 
+
+
+
   function changeQuantity(e){
     const {name, value} = e.target
-
-   const Quantity = {...weight[name], quantity: parseFloat(value)};
-   const newQuantity = {...weight, [name]: Quantity};
-
-   setWeights(newQuantity)
-
-    // console.log(newQuantity)
-  }
+    
+    setWeights((prevState) => ({
+      ...prevState,[name]: {...prevState[name],quantity: value,}
+    }))}
 
   
   const mathematic = (e) => {
@@ -91,6 +97,7 @@ function App() {
     Object.entries(weight).forEach(([key,value]) => {
       console.log(key,value)
     })
+   
    
 
 if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
@@ -103,6 +110,7 @@ if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
   results[25].plates = results[25].plates + 2
   console.log(results)
   console.log("25 = " +  weight[25].quantity)
+  console.log(weight[25].quantity)
  }
  while(weight["eleiko"].quantity >= weight[20].plate40 && weight[20].quantity >= 2){
   weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[20].plate40
@@ -145,31 +153,23 @@ if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
   results[125].plates = results[125].plates + 2
   console.log(weight["eleiko"])
   console.log("1.25 = " + weight[1.25].quantity)
+  
+ }
+  
+ results['Rest']['rest'] = weight['eleiko'].quantity
  }
 
- }
- results['rest'].rest = weight["eleiko"].quantity
   }
 
   const clearButton = () => {
-    setWeights(prevState => {
-      const newState = {};
-      Object.keys(prevState).forEach(key => {
-        newState[key] = { ...prevState[key], quantity: 0 };
-        
-      });
-      return newState;
-    });
-    console.log(weight)
-    
-    
-   
-  }
 
- const clearInput = (e) => {
-  e.target.value = ""
-  
- }
+    Object.entries(weight).forEach(([key,value]) => {
+      weight[key].quantity = 0
+
+     
+    })
+    setInputValue("")
+  }
 
 
   return (
@@ -180,10 +180,19 @@ if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
      
       <div className='Input-weight'>
       <h2>Podaj ilość talerzy na siłowni:</h2>
-        <input type="number" name="eleiko" onClick={clearInput} value={weight['eleiko'].quantity.number}  placeholder='Ciężar'  onChange={changeQuantity}/>
-        <input type="number" onClick={clearInput}  placeholder='sztanga'/>
-        <input type="number" name='25' value={weight[25].quantity.number} placeholder='25kg' onClick={clearInput} onChange={changeQuantity}/>
-        <input type="number" name="20" value={weight[20].quantity.number} placeholder='20kg'onClick={clearInput} onChange={changeQuantity}/>
+
+        <input type="number" name="eleiko"  value={inputValue}  placeholder='Ciężar' onChange={(e) => e.target.value}  
+        />
+
+        <input type="number" onClick={clearInput}  placeholder='sztanga'
+        />
+
+        <input type="number" name='25'   placeholder='25kg' onClick={clearInput} onChange={(e) => setInputValue(e.target.value)}
+        />
+
+        <input type="number" name="20" value={weight[20].quantity.number} placeholder='20kg'onClick={clearInput} onChange={changeQuantity}
+        />
+
         <input type="number" name='15'onClick={clearInput} value={weight[15].quantity.number} placeholder='15kg' onChange={changeQuantity}/>
         <input type="number" name="10"onClick={clearInput} value={weight[10].quantity.number} placeholder='10kg' onChange={changeQuantity}/>
         <input type="number" name='5'onClick={clearInput} value={weight[5].quantity.number} placeholder='5kg' onChange={changeQuantity}/>
@@ -191,19 +200,19 @@ if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
         <input type="number" name='1.25'onClick={clearInput} value={weight[1.25].quantity.number} placeholder='1.25kg' onChange={changeQuantity}/>
       </div>
     
-      
+
+
       </form>
       <button className='Button-cal' onClick={mathematic} >Oblicz</button>
       <button className='Button-clear' onClick={clearButton} >Wyczyść</button>
 
-  
-      <ul>
-  {Object.entries(results).map(([key, value]) => (
-    <li key={key}>{key}: {value.plates}</li>
-  ))}
-</ul>
-
-
+      <div> <ul>
+      {Object.entries(results).map(([key, value]) => (
+      <li key={key}>
+    {key}:{value.plates}
+  </li>
+))}
+</ul></div>
      
     </div>
   );
