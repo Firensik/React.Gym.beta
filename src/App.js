@@ -77,7 +77,7 @@ const clearInput = (e) => {
     },
     eleiko:{
       label:"eleiko",
-      quantity:inputValue['eleiko'],
+      quantity:inputValue,
     }
   })
 
@@ -181,7 +181,7 @@ if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
       <div className='Input-weight'>
       <h2>Podaj ilość talerzy na siłowni:</h2>
 
-        <input type="number" name="eleiko"  value={inputValue}  placeholder='Ciężar' onChange={(e) => e.target.value}  
+        <input type="number" name="eleiko"  value={inputValue}  placeholder='Ciężar' onChange={(e) => setWeights(e.target.value)}  
         />
 
         <input type="number" onClick={clearInput}  placeholder='sztanga'
