@@ -1,219 +1,180 @@
-import logo from './logo.svg';
-import './App.css';
-import { useState, useEffect } from 'react';
-
+import "./App.css";
+import { useState } from "react";
 
 function App() {
-
-const [inputValue,setInputValue] = useState("")
-
-const clearInput = (e) => {
-  e.target.value=""
-}
-
-
-  const [results , setResults] = useState({
-    25:{
-      plates:0,
-    },
-    20:{
-      plates:0
-    },
-    15:{
-      plates:0
-    },
-    10:{
-      plates:0
-    },
-    5:{
-      plates:0
-    },
-    250:{
-      plates:0
-    },
-  125:{
-    plates:0
-    },
-    'Rest':{
-      rest:[['eleiko'].quantity]
-    },
-  })
-
-  const [weight , setWeights]= useState({
-    25:{
+  const exportWeight = {
+    25: {
       label: "25kg",
-      plate50: 50,
-      quantity:0, //ilosc
+      quantity: 0,
     },
-    20:{
+    20: {
       label: "20kg",
-      plate40: 40,
-      quantity:0,
+      quantity: 0,
     },
-    15:{
+    15: {
       label: "15kg",
-      plate30: 30,
-      quantity:0,
+      quantity: 0,
     },
-    10:{
+    10: {
       label: "10kg",
-      plate20: 20,
-      quantity:0,
+      quantity: 0,
     },
-    5:{
+    5: {
       label: "5kg",
-      plate10: 10,
-      quantity:0,
+      quantity: 0,
     },
-    2.5:{
+    2.5: {
       label: "2.5kg",
-      plate25: 5,
-      quantity:0,
+      quantity: 0,
     },
-    1.25:{
+    1.25: {
       label: "1.25kg",
-      plate125: 2.5,
-      quantity:0,
+      quantity: 0,
     },
-    eleiko:{
-      label:"eleiko",
-      quantity:inputValue,
+  };
+
+  const result = {
+    25: {
+      plates: 0,
+    },
+    20: {
+      plates: 0,
+    },
+    15: {
+      plates: 0,
+    },
+    10: {
+      plates: 0,
+    },
+    5: {
+      plates: 0,
+    },
+    2.5: {
+      plates: 0,
+    },
+    1.25: {
+      plates: 0,
+    },
+  };
+
+  const [weight, setWeight] = useState(exportWeight);
+  const [results, setResults] = useState(result);
+  const [total, setTotal] = useState(0);
+
+  const clearInput = () => {
+    setWeight(exportWeight);
+    setTotal(0);
+  };
+
+  const handleQuantity = (e) => {
+    const { name, value } = e.target;
+
+    setWeight((prevState) => ({
+      ...prevState,
+      [name]: { ...prevState[name], quantity: +value },
+    }));
+  };
+  let newTotal = total;
+
+  const Mathematic = () => {
+    const calculatorWeight = (plateWeight, quantity, left) => {
+      const plateAmount = 2;
+      const actualWeight = plateWeight * plateAmount;
+
+      if (newTotal >= actualWeight && weight[plateWeight].quantity > quantity) {
+        results[plateWeight].plates = results[plateWeight].plates + plateAmount;
+        newTotal = left - actualWeight;
+        // setResults(results[plateWeight].plates);
+        setTotal(newTotal);
+        console.log(newTotal + " newtotal");
+        console.log(results);
+        return calculatorWeight(plateWeight, quantity + plateAmount, newTotal);
+      }
+
+      return;
+    };
+    for (let [key, value] of Object.entries(weight)) {
+      if (newTotal === 0) {
+        continue;
+      }
+      calculatorWeight(key, 0, newTotal);
     }
-  })
-
-
-
-
-  function changeQuantity(e){
-    const {name, value} = e.target
-    
-    setWeights((prevState) => ({
-      ...prevState,[name]: {...prevState[name],quantity: value,}
-    }))}
-
-  
-  const mathematic = (e) => {
-   
-    Object.entries(weight).forEach(([key,value]) => {
-      console.log(key,value)
-    })
-   
-   
-
-if(weight['eleiko'].quantity === 0 || weight['eleiko'].quantity < 20 ){
-  alert("Musisz podac ciężar wiekszy niż 20")
- }else{
- while(weight["eleiko"].quantity >= weight[25].plate50 && weight[25].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[25].plate50
-  weight[25].quantity = weight[25].quantity - 2
-  console.log(weight["eleiko"])
-  results[25].plates = results[25].plates + 2
-  console.log(results)
-  console.log("25 = " +  weight[25].quantity)
-  console.log(weight[25].quantity)
- }
- while(weight["eleiko"].quantity >= weight[20].plate40 && weight[20].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[20].plate40
-  weight[20].quantity = weight[20].quantity - 2
-  results[20].plates = results[20].plates + 2
-  console.log(weight["eleiko"])
-  console.log("20 = " + weight[20].quantity)
- }
- while(weight["eleiko"].quantity >= weight[15].plate30 && weight[15].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[15].plate30
-  weight[15].quantity = weight[15].quantity - 2
-  results[15].plates = results[15].plates + 2
-  console.log(weight["eleiko"])
-  console.log("15 = " + weight[15].quantity)
- }
- while(weight["eleiko"].quantity >= weight[10].plate20 && weight[10].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[10].plate20
-  weight[10].quantity = weight[10].quantity - 2
-  results[10].plates = results[10].plates + 2
-  console.log(weight["eleiko"])
-  console.log("10 = " + weight[10].quantity)
- }
- while(weight["eleiko"].quantity >= weight[5].plate10 && weight[5].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[5].plate10
-  weight[5].quantity = weight[5].quantity - 2
-  results[5].plates = results[5].plates + 2
-  console.log(weight["eleiko"])
-  console.log("5 = " + weight[5].quantity)
- }
- while(weight["eleiko"].quantity >= weight[2.5].plate25 && weight[2.5].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[2.5].plate25
-  weight[2.5].quantity = weight[2.5].quantity - 2
-  results[250].plates = results[250].plates + 2
-  console.log(weight["eleiko"])
-  console.log("2.5 = " + weight[2.5].quantity)
- }
- while(weight["eleiko"].quantity >= weight[1.25].plate125 && weight[1.25].quantity >= 2){
-  weight["eleiko"].quantity = weight["eleiko"].quantity -  weight[1.25].plate125
-  weight[1.25].quantity = weight[1.25].quantity - 2
-  results[125].plates = results[125].plates + 2
-  console.log(weight["eleiko"])
-  console.log("1.25 = " + weight[1.25].quantity)
-  
- }
-  
- results['Rest']['rest'] = weight['eleiko'].quantity
- }
-
-  }
-
-  const clearButton = () => {
-
-    Object.entries(weight).forEach(([key,value]) => {
-      weight[key].quantity = 0
-
-     
-    })
-    setInputValue("")
-  }
-
+  };
 
   return (
     <div className="App">
-      <form className='form'>
-      <h1 className='Name'>Gym Calculator</h1>
-     
-     
-      <div className='Input-weight'>
-      <h2>Podaj ilość talerzy na siłowni:</h2>
+      <form className="form">
+        <h1 className="Name">Gym Calculator</h1>
+        <h2>Aby podnieść {total} potrzebujesz:</h2>
 
-        <input type="number" name="eleiko"  value={inputValue}  placeholder='Ciężar' onChange={(e) => setWeights(e.target.value)}  
-        />
+        <div>
+          {Object.entries(results).map(([weight, value]) => {
+            return (
+              <div key={weight}>
+                {weight}kg - Plates: {value.plates}
+              </div>
+            );
+          })}
+        </div>
 
-        <input type="number" onClick={clearInput}  placeholder='sztanga'
-        />
-
-        <input type="number" name='25'   placeholder='25kg' onClick={clearInput} onChange={(e) => setInputValue(e.target.value)}
-        />
-
-        <input type="number" name="20" value={weight[20].quantity.number} placeholder='20kg'onClick={clearInput} onChange={changeQuantity}
-        />
-
-        <input type="number" name='15'onClick={clearInput} value={weight[15].quantity.number} placeholder='15kg' onChange={changeQuantity}/>
-        <input type="number" name="10"onClick={clearInput} value={weight[10].quantity.number} placeholder='10kg' onChange={changeQuantity}/>
-        <input type="number" name='5'onClick={clearInput} value={weight[5].quantity.number} placeholder='5kg' onChange={changeQuantity}/>
-        <input type="number" name='2.5'onClick={clearInput} value={weight[2.5].quantity.number} placeholder='2.5kg' onChange={changeQuantity}/>
-        <input type="number" name='1.25'onClick={clearInput} value={weight[1.25].quantity.number} placeholder='1.25kg' onChange={changeQuantity}/>
-      </div>
-    
-
-
+        <div className="Input-weight">
+          <h2>Podaj ilość talerzy na siłowni:</h2>
+          <input
+            value={total}
+            onChange={(e) => setTotal(e.target.value)}
+            type="number"
+          />
+          <label>Ilosc</label>
+          <input
+            name="25"
+            value={weight[25].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+          <input
+            name="20"
+            value={weight[20].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+          <input
+            name="15"
+            value={weight[15].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+          <input
+            name="10"
+            value={weight[10].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+          <input
+            name="5"
+            value={weight[5].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+          <input
+            name="2.5"
+            value={weight[2.5].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+          <input
+            name="1.25"
+            value={weight[1.25].quantity}
+            onChange={handleQuantity}
+            type="number"
+          />
+        </div>
       </form>
-      <button className='Button-cal' onClick={mathematic} >Oblicz</button>
-      <button className='Button-clear' onClick={clearButton} >Wyczyść</button>
-
-      <div> <ul>
-      {Object.entries(results).map(([key, value]) => (
-      <li key={key}>
-    {key}:{value.plates}
-  </li>
-))}
-</ul></div>
-     
+      <button className="Button-cal" onClick={Mathematic}>
+        Oblicz
+      </button>
+      <button className="Button-clear" onClick={clearInput}>
+        Wyczyść
+      </button>
     </div>
   );
 }
